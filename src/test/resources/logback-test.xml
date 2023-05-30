@@ -1,0 +1,26 @@
+<configuration>
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <!-- reset all previous level configurations of all j.u.l. loggers -->
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder>
+            <pattern>[%thread] %-5level %logger{36} [correlationid=%X{correlation_id}] - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <logger name="org.hibernate.SQL" level="TRACE"/>
+    <logger name="org.hibernate.orm.jdbc.bind" level="TRACE"/>
+    <logger name="org.ehcache" level="TRACE"/>
+    <logger name="org.springframework.cache" level="TRACE"/>
+    <logger name="org.hibernate.cache" level="TRACE"/>
+
+
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+    <root level="INFO"/>
+</configuration>
