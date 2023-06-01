@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <hibernate.version>6.2.3.Final</hibernate.version>
+        <hibernate.version>6.2.4.Final</hibernate.version>
         <threeten-extra.version>1.7.2</threeten-extra.version>
         <guava.version>31.1-jre</guava.version>
     </properties>
