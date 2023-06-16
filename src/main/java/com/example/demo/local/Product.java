@@ -2,8 +2,8 @@ package com.example.demo.local;
 
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 import static jakarta.persistence.FetchType.LAZY;
-import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
+import static lombok.AccessLevel.PUBLIC;
 import java.io.Serializable;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.DynamicUpdate;
@@ -31,7 +31,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-@OptimisticLocking(type = OptimisticLockType.ALL)
+@OptimisticLocking(type = OptimisticLockType.DIRTY)
 @DynamicUpdate
 @Cacheable
 @Cache(usage = READ_WRITE)
@@ -52,8 +52,9 @@ public class Product {
     @ToString.Include
     @Getter
     @Setter
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn
+    @Cache(usage = READ_WRITE)
+    @ManyToOne(fetch = LAZY, optional = false)
+    @JoinColumn(nullable = false)
     private Operator operator;
 
     @Column(name = "DESCRIPTION")
@@ -62,9 +63,8 @@ public class Product {
 
     @AllArgsConstructor
     @EqualsAndHashCode
-    @Getter
-    @Setter
-    @NoArgsConstructor(access = PRIVATE)
+    @ToString
+    @NoArgsConstructor(access = PUBLIC)
     public static class ProductPK implements Serializable {
         private String productId;
         private String operator;

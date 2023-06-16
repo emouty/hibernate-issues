@@ -7,12 +7,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.example.demo.local.Operator;
 import com.example.demo.local.OperatorDao;
 import com.example.demo.local.Product;
 import com.example.demo.local.Product.ProductPK;
 
+@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ExtendWith(SpringExtension.class)
@@ -82,4 +85,5 @@ class ProductServiceTest {
         Optional<Product> byId2 = productService.readProduct(id);
         assertThat(byId2.orElseThrow().getOperator().getOperatorId()).isEqualTo(operatorID);
     }
+
 }
