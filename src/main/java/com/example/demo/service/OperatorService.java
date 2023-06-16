@@ -32,4 +32,9 @@ public class OperatorService {
     public void deleteAllOperators() {
         operatorDao.deleteAll();
     }
+
+    @Transactional(propagation = REQUIRED)
+    public void deleteOperator(String id) {
+        operatorDao.deleteById(id);
+    }
 }

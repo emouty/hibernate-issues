@@ -52,9 +52,27 @@ class OperatorServiceTest {
 
     @Test
     @Order(2)
-    void shouldDeleteAllOperators() {
+    void shouldDeleteOperator() {
         String string = "ID2";
         String operatorID = "operatorID2";
+        String test = "test";
+        Operator operator = new Operator(operatorID);
+        operatorDao.save(operator);
+        Product product = new Product(string, operator);
+        product.setDescription(test);
+        productService.addProduct(product);
+
+        operatorService.deleteOperator(operatorID);
+
+        Optional<Operator> byId2 = operatorService.getOperator(operatorID);
+        assertThat(byId2).isEmpty();
+    }
+
+    @Test
+    @Order(3)
+    void shouldDeleteAllOperators() {
+        String string = "ID3";
+        String operatorID = "operatorID3";
         String test = "test";
         Operator operator = new Operator(operatorID);
         operatorDao.save(operator);
