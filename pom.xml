@@ -9,7 +9,7 @@
         <relativePath></relativePath>
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>hibernate-l2-cache-issue</artifactId>
+    <artifactId>hibernate-issues</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>demo</name>
     <description>Demo project for Spring Boot</description>
