@@ -11,4 +11,5 @@ This repository contains the code to reproduce issues encountered during my hibe
    association.
     - see [HHH-16810](https://hibernate.atlassian.net/browse/HHH-16810) for details.
 
-3. An issue that occurs when I try to delete an entity that have a 
+3. An issue that occurs when I try to delete an entity that have a composite id declared in an `@IdClass`
+   which has one of its fields is mapped from the primary key of a `@ManyToOne` association.
