@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.local.TagOperator;
-import com.example.demo.local.TagOperatorDao;
+import com.example.demo.local.tag.TagOperator;
+import com.example.demo.local.tag.TagOperatorDao;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

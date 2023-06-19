@@ -1,7 +1,8 @@
 package com.example.demo.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import java.util.Optional;
+import com.example.demo.local.Operator;
+import com.example.demo.local.Product;
+import com.example.demo.local.Product.ProductPK;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import com.example.demo.local.Operator;
-import com.example.demo.local.OperatorDao;
-import com.example.demo.local.Product;
-import com.example.demo.local.Product.ProductPK;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
@@ -23,7 +24,7 @@ class ProductServiceTest {
     @Autowired
     ProductService productService;
     @Autowired
-    OperatorDao operatorDao;
+    OperatorService operatorService;
 
     @Test
     void addProductTest() {
@@ -32,7 +33,7 @@ class ProductServiceTest {
         ProductPK id = new ProductPK(string, operatorID);
         String test = "test";
         Operator operator = new Operator(operatorID);
-        operatorDao.save(operator);
+        operatorService.addOperator(operator);
         Product product = new Product(string, operator);
         product.setDescription(test);
         productService.addProduct(product);
@@ -50,7 +51,7 @@ class ProductServiceTest {
         ProductPK id = new ProductPK(string, operatorID);
         String test = "test";
         Operator operator = new Operator(operatorID);
-        operatorDao.save(operator);
+        operatorService.addOperator(operator);
         Product product = new Product(string, operator);
         product.setDescription(test);
         productService.addProduct(product);
@@ -72,7 +73,7 @@ class ProductServiceTest {
         ProductPK id = new ProductPK(string, operatorID);
         String test = "test";
         Operator operator = new Operator(operatorID);
-        operatorDao.save(operator);
+        operatorService.addOperator(operator);
         Product product = new Product(string, operator);
         product.setDescription(test);
         productService.addProduct(product);
@@ -86,4 +87,24 @@ class ProductServiceTest {
         assertThat(byId2.orElseThrow().getOperator().getOperatorId()).isEqualTo(operatorID);
     }
 
+    @Test
+    void shouldDeleteProduct() {
+        // Given
+        String string = "ID2";
+        String operatorID = "operatorID2";
+        String test = "test";
+        Operator operator = new Operator(operatorID);
+        operatorService.addOperator(operator);
+        Product product = new Product(string, operator);
+        product.setDescription(test);
+        productService.addProduct(product);
+
+        // When
+        ProductPK productPK = new ProductPK(string, operatorID);
+        productService.deleteProduct(productPK);
+
+        // Then
+        Optional<Product> byId2 = productService.getProduct(productPK);
+        assertThat(byId2).isEmpty();
+    }
 }

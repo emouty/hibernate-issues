@@ -1,4 +1,4 @@
-package com.example.demo.local;
+package com.example.demo.local.tag;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,7 +9,7 @@ import org.hibernate.annotations.OptimisticLocking;
 
 import java.util.Set;
 
-import static com.example.demo.local.PolicyType.ALL;
+import static com.example.demo.local.tag.PolicyType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
@@ -19,7 +19,7 @@ import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = PROTECTED)
-@Table(name = "OPERATORS")
+@Table(name = "TAG_OPERATORS")
 @OptimisticLocking(type = OptimisticLockType.DIRTY)
 @DynamicUpdate
 @Cacheable
@@ -28,7 +28,7 @@ public class TagOperator {
 
     public TagOperator(String operatorId) {
         this.operatorId = operatorId;
-        this.tagPolicy = new Operator.OperatorTagPolicy(Set.of(), ALL);
+        this.tagPolicy = new OperatorTagPolicy(Set.of(), ALL);
     }
 
     @EqualsAndHashCode.Include
@@ -38,7 +38,7 @@ public class TagOperator {
     private String operatorId;
 
     @Embedded
-    private Operator.OperatorTagPolicy tagPolicy;
+    private OperatorTagPolicy tagPolicy;
 
 
     @Value

@@ -10,3 +10,5 @@ This repository contains the code to reproduce issues encountered during my hibe
 2. An issue that occurs when I try to delete an entity (or all entities) that contain an embedded with a many-to-many
    association.
     - see [HHH-16810](https://hibernate.atlassian.net/browse/HHH-16810) for details.
+
+3. An issue that occurs when I try to delete an entity that have a 

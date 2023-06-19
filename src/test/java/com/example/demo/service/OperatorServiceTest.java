@@ -1,8 +1,9 @@
 package com.example.demo.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import java.util.Optional;
+import com.example.demo.local.Operator;
+import com.example.demo.local.OperatorDao;
+import com.example.demo.local.Product;
+import com.example.demo.local.Product.ProductPK;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,10 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import com.example.demo.local.Operator;
-import com.example.demo.local.OperatorDao;
-import com.example.demo.local.Product;
-import com.example.demo.local.Product.ProductPK;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
@@ -53,17 +55,14 @@ class OperatorServiceTest {
     @Test
     @Order(2)
     void shouldDeleteOperator() {
-        String string = "ID2";
+        // Given
         String operatorID = "operatorID2";
-        String test = "test";
         Operator operator = new Operator(operatorID);
         operatorDao.save(operator);
-        Product product = new Product(string, operator);
-        product.setDescription(test);
-        productService.addProduct(product);
-
+        // When
         operatorService.deleteOperator(operatorID);
 
+        //Then
         Optional<Operator> byId2 = operatorService.getOperator(operatorID);
         assertThat(byId2).isEmpty();
     }
@@ -71,17 +70,13 @@ class OperatorServiceTest {
     @Test
     @Order(3)
     void shouldDeleteAllOperators() {
-        String string = "ID3";
+        // Given
         String operatorID = "operatorID3";
-        String test = "test";
         Operator operator = new Operator(operatorID);
         operatorDao.save(operator);
-        Product product = new Product(string, operator);
-        product.setDescription(test);
-        productService.addProduct(product);
-
+        // When
         operatorService.deleteAllOperators();
-
+        // Then
         Optional<Operator> byId2 = operatorService.getOperator(operatorID);
         assertThat(byId2).isEmpty();
     }

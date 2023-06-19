@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.local.TagOperator;
+import com.example.demo.local.tag.TagOperator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
