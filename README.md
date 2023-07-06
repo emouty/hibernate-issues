@@ -9,8 +9,12 @@ This repository contains the code to reproduce issues encountered during my hibe
 
 2. An issue that occurs when I try to delete an entity (or all entities) that contain an embedded with a many-to-many
    association.
-    - see [HHH-16810](https://hibernate.atlassian.net/browse/HHH-16810) for details.
+    - see [HHH-16821](https://hibernate.atlassian.net/browse/HHH-16821) for details.
+    - fixed in `6.2.6.Final`
 
 3. An issue that occurs when I try to delete an entity that have a composite id declared in an `@IdClass`
    which has one of its fields is mapped from the primary key of a `@ManyToOne` association.
-    - see [HHH-16821](https://hibernate.atlassian.net/browse/HHH-16821) for details.
+    - see [HHH-16810](https://hibernate.atlassian.net/browse/HHH-16810) for details.
+
+4. An issue that occurs when I have an entity with an IdClass that have one of its fields which is the idClass of a
+   OneToOne association  
