@@ -1,6 +1,8 @@
 package com.example.demo.local.special;
 
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
 import static lombok.AccessLevel.PROTECTED;
 import java.io.Serializable;
 import java.time.Instant;
@@ -61,7 +63,7 @@ public class SpecialProduct {
     @Setter
     @ToString.Include
     @EqualsAndHashCode.Include
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, cascade = { PERSIST, MERGE })
     @JoinColumn(name = "WHOLESALE_PRICE_AMOUNT",
                 referencedColumnName = "PRICE_POINT",
                 updatable = false,

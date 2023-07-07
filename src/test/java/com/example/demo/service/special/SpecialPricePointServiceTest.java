@@ -46,4 +46,22 @@ class SpecialPricePointServiceTest {
         assertThat(pricePoint).isNotEmpty();
         assertThat(pricePoint.orElseThrow().getWholesalePrice()).isEqualTo(wholesalePrice);
     }
+
+    @Test
+    void shouldDeletePricePoint() {
+        // given
+        String operatorId = "OPERATOR_1";
+        Provider provider = A;
+        SpecialOperator specialOperator = new SpecialOperator(provider, operatorId);
+        specialOperatorService.addOperator(specialOperator);
+        String wholesalePrice = "1 EUR";
+        SpecialPricePoint specialPricePoint = new SpecialPricePoint(specialOperator, wholesalePrice);
+        specialPricePointService.addPricePoint(specialPricePoint);
+        // when
+        specialPricePointService.deletePricePoint(provider, operatorId, wholesalePrice);
+
+        // then
+        Optional<SpecialPricePoint> pricePoint = specialPricePointService.getPricePoint(provider, operatorId, wholesalePrice);
+        assertThat(pricePoint).isEmpty();
+    }
 }

@@ -57,6 +57,26 @@ class SpecialProductServiceTest {
     }
 
     @Test
+    void shouldAddProductWithPricePoint() {
+        // given
+        String operatorId = "OPERATOR_1";
+        Provider provider = A;
+        SpecialOperator specialOperator = new SpecialOperator(provider, operatorId);
+        specialOperatorService.addOperator(specialOperator);
+        String wholesalePrice = "1 EUR";
+        SpecialPricePoint specialPricePoint = new SpecialPricePoint(specialOperator, wholesalePrice);
+        String productId = "PRODUCT_1";
+        SpecialProduct specialProduct = new SpecialProduct(productId, specialPricePoint);
+
+        // when
+        specialProductService.addProduct(specialProduct);
+
+        // then
+        SpecialProduct product = specialProductService.getProduct(provider, operatorId, wholesalePrice, productId);
+        assertThat(product.getWholesalePrice().getWholesalePrice()).isEqualTo(wholesalePrice);
+    }
+
+    @Test
     void shouldDeleteProduct() {
         // given
         String operatorId = "OPERATOR_1";
