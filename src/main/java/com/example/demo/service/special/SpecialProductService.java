@@ -1,5 +1,6 @@
 package com.example.demo.service.special;
 
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +18,23 @@ public class SpecialProductService {
 
     private final SpecialProductDao specialProductDao;
 
+    @Transactional(propagation = REQUIRED)
+    public void addProduct(SpecialProduct product) {
+        specialProductDao.save(product);
+    }
+
     @Transactional(propagation = SUPPORTS)
     public SpecialProduct getProduct(Provider provider, String operatorId, String wholesalePrice, String productId) {
         return specialProductDao.findById(new SpecialProductPK(new SpecialPricePointPK(new SpecialOperatorPK(provider,
                                                                                                              operatorId),
                                                                                        wholesalePrice),
                                                                productId)).orElse(null);
+    }
+
+    public void deleteProduct(Provider provider, String operatorId, String wholesalePrice, String productId) {
+        specialProductDao.deleteById(new SpecialProductPK(new SpecialPricePointPK(new SpecialOperatorPK(provider,
+                                                                                                        operatorId),
+                                                                                  wholesalePrice),
+                                                          productId));
     }
 }

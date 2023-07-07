@@ -48,12 +48,68 @@ class SpecialProductServiceTest {
         // when
         Optional<SpecialPricePoint> pricePoint = specialPricePointService.getPricePoint(provider, operatorId, wholesalePrice);
         assertThat(pricePoint).isNotEmpty();
-        specialPricePointService.attachProduct(provider, operatorId, wholesalePrice, specialProduct);
+        //specialPricePointService.attachProduct(provider, operatorId, wholesalePrice, specialProduct);
+        specialProductService.addProduct(specialProduct);
 
         // then
         SpecialProduct product = specialProductService.getProduct(provider, operatorId, wholesalePrice, productId);
         assertThat(product.getWholesalePrice().getWholesalePrice()).isEqualTo(wholesalePrice);
+    }
 
+    @Test
+    void shouldDeleteProduct() {
+        // given
+        String operatorId = "OPERATOR_1";
+        Provider provider = A;
+        SpecialOperator specialOperator = new SpecialOperator(provider, operatorId);
+        specialOperatorService.addOperator(specialOperator);
+        String wholesalePrice = "1 EUR";
+        SpecialPricePoint specialPricePoint = new SpecialPricePoint(specialOperator, wholesalePrice);
+        specialPricePointService.addPricePoint(specialPricePoint);
+        String productId = "PRODUCT_1";
+        SpecialProduct specialProduct = new SpecialProduct(productId, specialPricePoint);
+
+        Optional<SpecialPricePoint> pricePoint = specialPricePointService.getPricePoint(provider, operatorId, wholesalePrice);
+        assertThat(pricePoint).isNotEmpty();
+        specialProductService.addProduct(specialProduct);
+        SpecialProduct product = specialProductService.getProduct(provider, operatorId, wholesalePrice, productId);
+        assertThat(product).isNotNull();
+
+        // when
+        specialProductService.deleteProduct(provider, operatorId, wholesalePrice, productId);
+
+        // then
+        SpecialProduct product1 = specialProductService.getProduct(provider, operatorId, wholesalePrice, productId);
+        assertThat(product1).isNull();
+    }
+
+    @Test
+    void shouldRemoveProductWhenPricePointIsDeleted() {
+        // given
+        String operatorId = "OPERATOR_1";
+        Provider provider = A;
+        SpecialOperator specialOperator = new SpecialOperator(provider, operatorId);
+        specialOperatorService.addOperator(specialOperator);
+        String wholesalePrice = "1 EUR";
+        SpecialPricePoint specialPricePoint = new SpecialPricePoint(specialOperator, wholesalePrice);
+        specialPricePointService.addPricePoint(specialPricePoint);
+        String productId = "PRODUCT_1";
+        SpecialProduct specialProduct = new SpecialProduct(productId, specialPricePoint);
+
+        Optional<SpecialPricePoint> pricePoint = specialPricePointService.getPricePoint(provider, operatorId, wholesalePrice);
+        assertThat(pricePoint).isNotEmpty();
+        specialProductService.addProduct(specialProduct);
+        SpecialProduct product = specialProductService.getProduct(provider, operatorId, wholesalePrice, productId);
+        assertThat(product).isNotNull();
+
+        // when
+        specialPricePointService.deletePricePoint(provider, operatorId, wholesalePrice);
+
+        // then
+        Optional<SpecialPricePoint> pricePoint1 = specialPricePointService.getPricePoint(provider, operatorId, wholesalePrice);
+        assertThat(pricePoint1).isEmpty();
+        SpecialProduct product1 = specialProductService.getProduct(provider, operatorId, wholesalePrice, productId);
+        assertThat(product1).isNull();
     }
 
 }

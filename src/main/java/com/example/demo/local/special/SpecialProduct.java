@@ -20,6 +20,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -60,7 +61,13 @@ public class SpecialProduct {
     @Setter
     @ToString.Include
     @EqualsAndHashCode.Include
-    @OneToOne(optional = false, mappedBy = "product")
+    @OneToOne(optional = false)
+    @JoinColumn(name = "WHOLESALE_PRICE_AMOUNT",
+                referencedColumnName = "PRICE_POINT",
+                updatable = false,
+                insertable = false)
+    @JoinColumn(name = "OPERATOR_ID", referencedColumnName = "OPERATOR_ID", updatable = false, insertable = false)
+    @JoinColumn(name = "PROVIDER_ID", referencedColumnName = "PROVIDER_ID", updatable = false, insertable = false)
     @MapsId
     private SpecialPricePoint wholesalePrice;
 

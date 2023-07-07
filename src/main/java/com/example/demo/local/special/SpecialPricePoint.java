@@ -54,31 +54,20 @@ public class SpecialPricePoint {
     @MapsId
     private SpecialOperator operator;
 
-    @Column(name = "PRODUCT_ID")
-    @Setter
-    private String productId;
-
     @Id
     @Column(name = "PRICE_POINT", nullable = false)
     @ToString.Include
     @EqualsAndHashCode.Include
     String wholesalePrice;
 
-    @OneToOne(cascade = { PERSIST, MERGE, REMOVE }, orphanRemoval = true)
-    @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "PRODUCT_ID", updatable = false, insertable = false)
-    @JoinColumn(name = "PRICE_POINT",
-                referencedColumnName = "WHOLESALE_PRICE_AMOUNT",
-                updatable = false,
-                insertable = false)
-    @JoinColumn(name = "OPERATOR_ID", referencedColumnName = "OPERATOR_ID", updatable = false, insertable = false)
-    @JoinColumn(name = "PROVIDER_ID", referencedColumnName = "PROVIDER_ID", updatable = false, insertable = false)
+    @OneToOne(mappedBy = "wholesalePrice", cascade = { PERSIST, MERGE, REMOVE }, orphanRemoval = true)
     @Cache(usage = READ_WRITE)
     private SpecialProduct product;
 
     public void setProduct(SpecialProduct product) {
-        this.product = product;
-        this.productId = product.getProductId();
         product.setWholesalePrice(this);
+        this.product = product;
+
     }
 
     @Value
