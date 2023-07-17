@@ -31,6 +31,7 @@ public class SpecialProductService {
                                                                productId)).orElse(null);
     }
 
+    @Transactional(propagation = REQUIRED)
     public void deleteProduct(Provider provider, String operatorId, String wholesalePrice, String productId) {
         specialProductDao.deleteById(new SpecialProductPK(new SpecialPricePointPK(new SpecialOperatorPK(provider,
                                                                                                         operatorId),
