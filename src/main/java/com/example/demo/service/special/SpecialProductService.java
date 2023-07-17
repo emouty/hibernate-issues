@@ -38,4 +38,9 @@ public class SpecialProductService {
                                                                                   wholesalePrice),
                                                           productId));
     }
+
+    @Transactional(propagation = REQUIRED)
+    public void deleteAllProducts() {
+        specialProductDao.deleteAll();
+    }
 }

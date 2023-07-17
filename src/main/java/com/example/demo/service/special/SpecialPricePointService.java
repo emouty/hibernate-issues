@@ -36,9 +36,11 @@ public class SpecialPricePointService {
                                                               wholesalePrice));
     }
 
+    @Transactional(propagation = REQUIRED)
     public void deletePricePoint(Provider provider, String operatorId, String wholesalePrice) {
         pricePointDao.deleteById(new SpecialPricePointPK(new SpecialOperatorPK(provider,
                                                                                operatorId),
                                                          wholesalePrice));
     }
+
 }
