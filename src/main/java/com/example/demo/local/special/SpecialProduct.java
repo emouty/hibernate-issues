@@ -1,6 +1,7 @@
 package com.example.demo.local.special;
 
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
+import static jakarta.persistence.CascadeType.PERSIST;
 import static lombok.AccessLevel.PROTECTED;
 import java.io.Serializable;
 import java.time.Instant;
@@ -20,6 +21,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -60,7 +62,13 @@ public class SpecialProduct {
     @Setter
     @ToString.Include
     @EqualsAndHashCode.Include
-    @OneToOne(optional = false, mappedBy = "product")
+    @OneToOne(optional = false, cascade = PERSIST)
+    @JoinColumn(name = "WHOLESALE_PRICE_AMOUNT",
+                referencedColumnName = "PRICE_POINT",
+                updatable = false,
+                insertable = false)
+    @JoinColumn(name = "OPERATOR_ID", referencedColumnName = "OPERATOR_ID", updatable = false, insertable = false)
+    @JoinColumn(name = "PROVIDER_ID", referencedColumnName = "PROVIDER_ID", updatable = false, insertable = false)
     @MapsId
     private SpecialPricePoint wholesalePrice;
 

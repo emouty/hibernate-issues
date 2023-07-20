@@ -15,8 +15,7 @@ import com.example.demo.local.special.SpecialOperator;
 import com.example.demo.local.special.SpecialPricePoint;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-                properties = { "spring.jpa.properties.hibernate.cache.use_second_level_cache=false",
+@SpringBootTest(properties = { "spring.jpa.properties.hibernate.cache.use_second_level_cache=false",
                                "spring.jpa.properties.hibernate.cache.use_query_cache=false" })
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ExtendWith(SpringExtension.class)
@@ -45,5 +44,23 @@ class SpecialPricePointServiceTest {
         Optional<SpecialPricePoint> pricePoint = specialPricePointService.getPricePoint(provider, operatorId, wholesalePrice);
         assertThat(pricePoint).isNotEmpty();
         assertThat(pricePoint.orElseThrow().getWholesalePrice()).isEqualTo(wholesalePrice);
+    }
+
+    @Test
+    void shouldDeletePricePoint() {
+        // given
+        String operatorId = "OPERATOR_1";
+        Provider provider = A;
+        SpecialOperator specialOperator = new SpecialOperator(provider, operatorId);
+        specialOperatorService.addOperator(specialOperator);
+        String wholesalePrice = "1 EUR";
+        SpecialPricePoint specialPricePoint = new SpecialPricePoint(specialOperator, wholesalePrice);
+        specialPricePointService.addPricePoint(specialPricePoint);
+        // when
+        specialPricePointService.deletePricePoint(provider, operatorId, wholesalePrice);
+
+        // then
+        Optional<SpecialPricePoint> pricePoint = specialPricePointService.getPricePoint(provider, operatorId, wholesalePrice);
+        assertThat(pricePoint).isEmpty();
     }
 }

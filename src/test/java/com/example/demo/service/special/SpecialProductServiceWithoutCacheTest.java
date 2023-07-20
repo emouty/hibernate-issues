@@ -16,10 +16,11 @@ import com.example.demo.local.special.SpecialPricePoint;
 import com.example.demo.local.special.SpecialProduct;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest
+@SpringBootTest(properties = { "spring.jpa.properties.hibernate.cache.use_second_level_cache=false",
+                               "spring.jpa.properties.hibernate.cache.use_query_cache=false" })
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ExtendWith(SpringExtension.class)
-class SpecialProductServiceTest {
+class SpecialProductServiceWithoutCacheTest {
 
     @Autowired
     private SpecialOperatorService specialOperatorService;

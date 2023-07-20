@@ -17,4 +17,5 @@ This repository contains the code to reproduce issues encountered during my hibe
     - see [HHH-16810](https://hibernate.atlassian.net/browse/HHH-16810) for details.
 
 4. An issue that occurs when I have an entity with an IdClass that have one of its fields which is the idClass of a
-   OneToOne association  
+   OneToOne association
+    - mapping was incorrect, see [HHH-16908](https://hibernate.atlassian.net/browse/HHH-16908) for details
