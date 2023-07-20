@@ -1,20 +1,25 @@
 package com.example.demo.local;
 
-import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
+import static lombok.AccessLevel.PROTECTED;
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OptimisticLockType;
 import org.hibernate.annotations.OptimisticLocking;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static lombok.AccessLevel.PROTECTED;
-import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
+import jakarta.persistence.Cacheable;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Entity
@@ -38,8 +43,7 @@ public class Operator {
     @Column(name = "OPERATOR_ID", nullable = false)
     private String operatorId;
 
-
-    @OneToMany(mappedBy = "operator", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "operator", cascade = { CascadeType.ALL }, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Product> products = new ArrayList<>();
 
     public void setProducts(List<Product> products) {

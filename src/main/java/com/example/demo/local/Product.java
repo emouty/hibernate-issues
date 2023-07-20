@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 import static lombok.AccessLevel.PUBLIC;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OptimisticLockType;
@@ -12,6 +13,8 @@ import org.hibernate.annotations.OptimisticLocking;
 import com.example.demo.local.Product.ProductPK;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -24,6 +27,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.Value;
+import lombok.experimental.NonFinal;
 
 @Getter
 @IdClass(ProductPK.class)
@@ -31,7 +36,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-@OptimisticLocking(type = OptimisticLockType.DIRTY)
+@OptimisticLocking(type = OptimisticLockType.ALL)
 @DynamicUpdate
 @Cacheable
 @Cache(usage = READ_WRITE)
@@ -40,6 +45,12 @@ public class Product {
     public Product(String productId, Operator operator) {
         this.productId = productId;
         this.operator = operator;
+    }
+
+    public Product(String productId, Operator operator, Benefits benefits) {
+        this.productId = productId;
+        this.operator = operator;
+        this.benefits = benefits;
     }
 
     @EqualsAndHashCode.Include
@@ -61,6 +72,9 @@ public class Product {
     @Setter
     private String description;
 
+    @Embedded
+    private Benefits benefits;
+
     @AllArgsConstructor
     @EqualsAndHashCode
     @ToString
@@ -68,5 +82,44 @@ public class Product {
     public static class ProductPK implements Serializable {
         private String productId;
         private String operator;
+    }
+
+    @Embeddable
+    @Value
+    @AllArgsConstructor
+    @NoArgsConstructor(access = PROTECTED)
+    public static class Benefits {
+
+        @Embedded
+        @NonFinal
+        @Setter
+        TypeOneBenefit credit;
+
+        @Embedded
+        @NonFinal
+        @Setter
+        TypeTwoBenefit data;
+    }
+
+    @Embeddable
+    @Value
+    @AllArgsConstructor
+    @NoArgsConstructor(access = PROTECTED)
+    public static class TypeOneBenefit {
+        @NonFinal
+        @Column(name = "BENEFIT_ONE_BASE_AMOUNT")
+        BigDecimal baseAmount;
+
+    }
+
+    @Embeddable
+    @Value
+    @AllArgsConstructor
+    @NoArgsConstructor(access = PROTECTED)
+    public static class TypeTwoBenefit {
+
+        @NonFinal
+        @Column(name = "BENEFIT_TWO_BASE_AMOUNT")
+        String baseAmount;
     }
 }
