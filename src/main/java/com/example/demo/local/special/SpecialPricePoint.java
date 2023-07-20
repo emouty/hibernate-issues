@@ -2,7 +2,7 @@ package com.example.demo.local.special;
 
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 import static jakarta.persistence.CascadeType.MERGE;
-import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.REFRESH;
 import static jakarta.persistence.CascadeType.REMOVE;
 import static lombok.AccessLevel.PACKAGE;
 import static lombok.AccessLevel.PROTECTED;
@@ -60,7 +60,7 @@ public class SpecialPricePoint {
     @EqualsAndHashCode.Include
     String wholesalePrice;
 
-    @OneToOne(mappedBy = "wholesalePrice", cascade = { PERSIST, MERGE, REMOVE }, orphanRemoval = true)
+    @OneToOne(mappedBy = "wholesalePrice", cascade = { REFRESH, MERGE, REMOVE }, orphanRemoval = true)
     @Cache(usage = READ_WRITE)
     private SpecialProduct product;
 
