@@ -3,7 +3,6 @@ package com.example.demo.local;
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
-import static lombok.AccessLevel.PUBLIC;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import org.hibernate.annotations.Cache;
@@ -11,6 +10,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OptimisticLockType;
 import org.hibernate.annotations.OptimisticLocking;
 import com.example.demo.local.Product.ProductPK;
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -36,7 +36,7 @@ import lombok.experimental.NonFinal;
 @ToString(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-@OptimisticLocking(type = OptimisticLockType.ALL)
+@OptimisticLocking(type = OptimisticLockType.DIRTY)
 @DynamicUpdate
 @Cacheable
 @Cache(usage = READ_WRITE)
@@ -58,6 +58,7 @@ public class Product {
     @Id
     @Column(name = "PRODUCT_ID", nullable = false)
     private String productId;
+
     @Id
     @EqualsAndHashCode.Include
     @ToString.Include
@@ -65,7 +66,8 @@ public class Product {
     @Setter
     @Cache(usage = READ_WRITE)
     @ManyToOne(fetch = LAZY, optional = false)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "OPERATOR_ID", nullable = false)
+    @JoinColumn(name = "COUNTRY", nullable = false)
     private Operator operator;
 
     @Column(name = "DESCRIPTION")
@@ -75,13 +77,27 @@ public class Product {
     @Embedded
     private Benefits benefits;
 
-    @AllArgsConstructor
     @EqualsAndHashCode
     @ToString
-    @NoArgsConstructor(access = PUBLIC)
+    @Embeddable
+    @NoArgsConstructor(access = PROTECTED)
     public static class ProductPK implements Serializable {
         private String productId;
-        private String operator;
+        @Embedded
+        @AttributeOverride(name = "operatorId", column = @Column(name = "OPERATOR_ID", nullable = false))
+        @AttributeOverride(name = "country",
+                           column = @Column(name = "COUNTRY", nullable = false))
+        private Operator.OperatorPK operator;
+
+        public ProductPK(String productId, Operator.OperatorPK operator) {
+            this.productId = productId;
+            this.operator = operator;
+        }
+
+        public ProductPK(String productId, String operatorID, Country country) {
+            this.productId = productId;
+            this.operator = new Operator.OperatorPK(operatorID, country);
+        }
     }
 
     @Embeddable

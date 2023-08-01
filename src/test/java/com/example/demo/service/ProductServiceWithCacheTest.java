@@ -20,11 +20,11 @@ import com.example.demo.local.Product.TypeOneBenefit;
 import com.example.demo.local.Product.TypeTwoBenefit;
 
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(properties = { "spring.jpa.properties.hibernate.cache.use_second_level_cache=false",
-                               "spring.jpa.properties.hibernate.cache.use_query_cache=false" })
+@SpringBootTest(properties = { "spring.jpa.properties.hibernate.cache.use_second_level_cache=true",
+                               "spring.jpa.properties.hibernate.cache.use_query_cache=true" })
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ExtendWith(SpringExtension.class)
-class ProductServiceTest {
+class ProductServiceWithCacheTest {
     @Autowired
     ProductService productService;
     @Autowired
@@ -44,6 +44,48 @@ class ProductServiceTest {
 
         Optional<Product> byId = productService.getProduct(id);
         assertThat(byId.orElseThrow().getDescription()).isEqualTo(test);
+        Optional<Product> byId2 = productService.readProduct(id);
+        assertThat(byId2.orElseThrow().getOperator().getOperatorId()).isEqualTo(operatorID);
+    }
+
+    @Test
+    void addProductAndReadFromCacheTest() {
+        String string = "ID";
+        String operatorID = "operatorID";
+        ProductPK id = new ProductPK(string, operatorID, USA);
+        String test = "test";
+        Operator operator = new Operator(operatorID);
+        operatorService.addOperator(operator);
+        Product product = new Product(string, operator);
+        product.setDescription(test);
+        productService.addProduct(product);
+
+        // getProduct has @Transactional(propagation = REQUIRES_NEW)
+        // First read is made from DB
+        Optional<Product> byId = productService.getProduct(id);
+        assertThat(byId.orElseThrow().getOperator().getOperatorId()).isEqualTo(operatorID);
+        // Second read is from cache
+        Optional<Product> byId2 = productService.getProduct(id);
+        assertThat(byId2.orElseThrow().getOperator().getOperatorId()).isEqualTo(operatorID);
+    }
+
+    @Test
+    void addProductAndReadFromCacheReadOnlyTest() {
+        String string = "ID";
+        String operatorID = "operatorID";
+        ProductPK id = new ProductPK(string, operatorID, USA);
+        String test = "test";
+        Operator operator = new Operator(operatorID);
+        operatorService.addOperator(operator);
+        Product product = new Product(string, operator);
+        product.setDescription(test);
+        productService.addProduct(product);
+        // getProduct has @Transactional(propagation = REQUIRES_NEW) annotation
+        // First read is made from DB
+        Optional<Product> byId = productService.getProduct(id);
+        assertThat(byId.orElseThrow().getOperator().getOperatorId()).isEqualTo(operatorID);
+        // readProduct has @Transactional(readOnly = true) annotation
+        // Second read is from cache
         Optional<Product> byId2 = productService.readProduct(id);
         assertThat(byId2.orElseThrow().getOperator().getOperatorId()).isEqualTo(operatorID);
     }
