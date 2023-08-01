@@ -1,9 +1,9 @@
 package com.example.demo.service;
 
-import com.example.demo.local.Operator;
-import com.example.demo.local.OperatorDao;
-import com.example.demo.local.Product;
-import com.example.demo.local.Product.ProductPK;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static com.example.demo.local.Country.USA;
+import java.util.Optional;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,11 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
+import com.example.demo.local.Operator;
+import com.example.demo.local.OperatorDao;
+import com.example.demo.local.Product;
+import com.example.demo.local.Product.ProductPK;
 
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
@@ -37,7 +36,7 @@ class OperatorServiceTest {
     void shouldEditProductTest() {
         String string = "ID";
         String operatorID = "operatorID";
-        ProductPK id = new ProductPK(string, operatorID);
+        ProductPK id = new ProductPK(string, operatorID, USA);
         String test = "test";
         Operator operator = new Operator(operatorID);
         operatorDao.save(operator);
@@ -46,7 +45,6 @@ class OperatorServiceTest {
         productService.addProduct(product);
 
         assertThatNoException().isThrownBy(() -> operatorService.updateProductFromOperator(operatorID, string, "Description"));
-
 
         Optional<Product> byId2 = productService.readProduct(id);
         assertThat(byId2.orElseThrow().getDescription()).isEqualTo("Description");
@@ -60,7 +58,7 @@ class OperatorServiceTest {
         Operator operator = new Operator(operatorID);
         operatorDao.save(operator);
         // When
-        operatorService.deleteOperator(operatorID);
+        operatorService.deleteOperator(new Operator.OperatorPK(operatorID, USA));
 
         //Then
         Optional<Operator> byId2 = operatorService.getOperator(operatorID);
