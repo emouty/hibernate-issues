@@ -1,7 +1,7 @@
 package com.example.demo.local;
 
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
-import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.FetchType.EAGER;
 import static lombok.AccessLevel.PROTECTED;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -64,9 +64,9 @@ public class Product {
     @Getter
     @Setter
     @Cache(usage = READ_WRITE)
-    @ManyToOne(fetch = LAZY, optional = false)
+    @ManyToOne(fetch = EAGER, optional = false)
     @JoinColumn(name = "OPERATOR_ID", nullable = false)
-    @JoinColumn(name = "COUNTRY", nullable = false, columnDefinition = "varchar")
+    @JoinColumn(name = "COUNTRY", nullable = false)
     private Operator operator;
 
     @Column(name = "DESCRIPTION")
