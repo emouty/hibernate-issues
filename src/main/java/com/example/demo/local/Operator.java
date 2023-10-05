@@ -5,7 +5,6 @@ import static com.example.demo.local.Country.USA;
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
-import static jakarta.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PROTECTED;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,9 +15,9 @@ import org.hibernate.annotations.OptimisticLockType;
 import org.hibernate.annotations.OptimisticLocking;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -50,8 +49,8 @@ public class Operator {
     @EqualsAndHashCode.Include
     @ToString.Include
     @Id
-    @Enumerated(STRING)
-    @Column(name = "COUNTRY", nullable = false, columnDefinition = "varchar")
+    @Convert(converter = CountryConverter.class)
+    @Column(name = "COUNTRY", nullable = false)
     private Country country;
 
     @EqualsAndHashCode.Include
@@ -92,7 +91,6 @@ public class Operator {
         @NonFinal
         String operatorId;
         @NonFinal
-        @Enumerated(STRING)
         Country country;
     }
 
