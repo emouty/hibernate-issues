@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import com.example.demo.local.FixedProduct;
 import com.example.demo.local.Operator;
 import com.example.demo.local.Product;
 import com.example.demo.local.Product.Benefits;
@@ -37,8 +38,7 @@ class ProductServiceTest {
         ProductPK id = new ProductPK(string, operatorID, USA);
         String test = "test";
         Operator operator = new Operator(operatorID);
-        operatorService.addOperator(operator);
-        Product product = new Product(string, operator);
+        Product product = new FixedProduct(string, operator);
         product.setDescription(test);
         productService.addProduct(product);
 
@@ -49,14 +49,31 @@ class ProductServiceTest {
     }
 
     @Test
+    void addFixedProductTest() {
+        String string = "ID";
+        String operatorID = "operatorID";
+        ProductPK id = new ProductPK(string, operatorID, USA);
+        String test = "test";
+        Operator operator = new Operator(operatorID);
+        FixedProduct product = new FixedProduct(string, operator);
+        product.setDescription(test);
+        productService.addFixedProduct(product);
+
+        Optional<FixedProduct> byId = productService.getFixedProduct(id);
+        assertThat(byId.orElseThrow().getDescription()).isEqualTo(test);
+        Optional<FixedProduct> byId2 = productService.readFixedProduct(id);
+        assertThat(byId2.orElseThrow().getOperator().getOperatorId()).isEqualTo(operatorID);
+    }
+
+    @Test
     void shouldDeleteProduct() {
         // Given
         String string = "ID2";
         String operatorID = "operatorID2";
         String test = "test";
         Operator operator = new Operator(operatorID);
-        operatorService.addOperator(operator);
-        Product product = new Product(string, operator);
+        //operatorService.addOperator(operator);
+        Product product = new FixedProduct(string, operator);
         product.setDescription(test);
         productService.addProduct(product);
 
@@ -77,19 +94,18 @@ class ProductServiceTest {
         String operatorID = "operatorID2";
         String test = "test";
         Operator operator = new Operator(operatorID);
-        operatorService.addOperator(operator);
+        //operatorService.addOperator(operator);
 
         TypeOneBenefit typeOneBenefit = new TypeOneBenefit(BigDecimal.TEN);
         Benefits benefits1 = new Benefits(typeOneBenefit, null);
-        Product product = new Product(productId1, operator, benefits1);
+        Product product = new FixedProduct(productId1, operator, benefits1);
         product.setDescription(test);
         productService.addProduct(product);
 
         TypeTwoBenefit typeTwoBenefit = new TypeTwoBenefit(BigDecimal.ONE.toString());
         Benefits benefits2 = new Benefits(null, typeTwoBenefit);
-        Product product2 = new Product(productId2, operator, benefits2);
-
-        productService.addProduct(product2);
+        Product product2 = new FixedProduct(productId2, operator, benefits2);
+        operatorService.addProductToOperator(product2);
         // When
         ProductPK productPK = new ProductPK(productId1, operatorID, USA);
         operatorService.deleteOperator(new Operator.OperatorPK(operatorID, USA));
@@ -107,19 +123,20 @@ class ProductServiceTest {
         String operatorID = "operatorID2";
         String test = "test";
         Operator operator = new Operator(operatorID);
-        operatorService.addOperator(operator);
+        // operatorService.addOperator(operator);
 
         TypeOneBenefit typeOneBenefit = new TypeOneBenefit(BigDecimal.TEN);
         Benefits benefits1 = new Benefits(typeOneBenefit, null);
-        Product product = new Product(productId1, operator, benefits1);
+        Product product = new FixedProduct(productId1, operator, benefits1);
         product.setDescription(test);
         productService.addProduct(product);
 
         TypeTwoBenefit typeTwoBenefit = new TypeTwoBenefit(BigDecimal.ONE.toString());
+        operator = operatorService.getOperator(operatorID).orElseThrow();
         Benefits benefits2 = new Benefits(null, typeTwoBenefit);
-        Product product2 = new Product(productId2, operator, benefits2);
-
-        productService.addProduct(product2);
+        Product product2 = new FixedProduct(productId2, operator, benefits2);
+        operatorService.addProductToOperator(product2);
+        //productService.addProduct(product2);
         // When
         productService.deleteAllProducts();
         // Then

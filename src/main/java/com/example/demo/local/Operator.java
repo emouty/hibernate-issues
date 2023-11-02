@@ -5,6 +5,7 @@ import static com.example.demo.local.Country.USA;
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
+import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,7 +19,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
@@ -66,7 +66,8 @@ public class Operator {
     @OneToMany(mappedBy = "operator",
                cascade = { PERSIST, MERGE, REMOVE },
                orphanRemoval = true,
-               fetch = FetchType.LAZY)
+               fetch = LAZY)
+    @Cache(usage = READ_WRITE)
     private List<Product> products = new ArrayList<>();
 
     public Operator(String operatorId) {

@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static com.example.demo.local.Country.USA;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import com.example.demo.local.FixedProduct;
 import com.example.demo.local.MetaOperator;
 import com.example.demo.local.Operator;
 import com.example.demo.local.Product;
@@ -36,7 +38,7 @@ class MetaOperatorServiceTest {
         Operator operator = new Operator(operatorId);
         operatorService.addOperator(operator);
 
-        metaOperatorService.attachOperator(metaId, operatorId, com.example.demo.local.Country.USA);
+        metaOperatorService.attachOperator(metaId, operatorId, USA);
         //when/then
         assertThat(operatorService.getOperator(operatorId).orElseThrow()).isNotNull();
         assertThat(operatorService.getOperator(operatorId).orElseThrow().getMetaOperator()).isNotNull();
@@ -51,15 +53,13 @@ class MetaOperatorServiceTest {
 
         String operatorId = "operatorId";
         Operator operator = new Operator(operatorId);
-        operatorService.addOperator(operator);
-
-        metaOperatorService.attachOperator(metaId, operatorId, com.example.demo.local.Country.USA);
 
         String productId = "product_1";
-        productService.addProduct(new Product(productId, operator));
+        productService.addProduct(new FixedProduct(productId, operator));
+        metaOperatorService.attachOperator(metaId, operatorId, USA);
 
         //when/then
-        Product.ProductPK productPK = new Product.ProductPK(productId, new Operator.OperatorPK(operatorId, com.example.demo.local.Country.USA));
+        Product.ProductPK productPK = new Product.ProductPK(productId, new Operator.OperatorPK(operatorId, USA));
         assertThat(productService.getProduct(productPK).orElseThrow()).isNotNull();
         assertThat(productService.getProduct(productPK).orElseThrow().getOperator().getMetaOperator()).isNotNull();
     }

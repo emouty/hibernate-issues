@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.local.Operator;
+import com.example.demo.local.Operator.OperatorPK;
 import com.example.demo.local.OperatorDao;
 import com.example.demo.local.Product;
 import lombok.AllArgsConstructor;
@@ -23,12 +24,12 @@ public class OperatorService {
 
     @Transactional(propagation = REQUIRED)
     public Optional<Operator> getOperator(String id) {
-        return operatorDao.findById(new Operator.OperatorPK(id, USA));
+        return operatorDao.findById(new OperatorPK(id, USA));
     }
 
     @Transactional(propagation = REQUIRED)
     public void updateProductFromOperator(String operatorID, String productId, String description) {
-        Product product1 = operatorDao.findById(new Operator.OperatorPK(operatorID, USA))
+        Product product1 = operatorDao.findById(new OperatorPK(operatorID, USA))
                                       .orElseThrow()
                                       .getProducts()
                                       .stream()
@@ -44,7 +45,18 @@ public class OperatorService {
     }
 
     @Transactional(propagation = REQUIRED)
-    public void deleteOperator(Operator.OperatorPK id) {
+    public void deleteOperator(OperatorPK id) {
         operatorDao.deleteById(id);
+    }
+
+    @Transactional
+    public void addProductToOperator(Product product2) {
+        Operator operator = operatorDao.findById(new OperatorPK(product2.getOperator()
+                                                                        .getOperatorId(),
+                                                                product2.getOperator()
+                                                                        .getCountry()))
+                                       .orElseThrow();
+        operator.getProducts().add(product2);
+
     }
 }

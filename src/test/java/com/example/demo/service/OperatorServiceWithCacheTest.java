@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static com.example.demo.local.Country.USA;
 import java.util.Optional;
 import org.junit.jupiter.api.Order;
@@ -11,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.example.demo.local.FixedProduct;
 import com.example.demo.local.Operator;
@@ -19,11 +20,12 @@ import com.example.demo.local.OperatorDao;
 import com.example.demo.local.Product;
 import com.example.demo.local.Product.ProductPK;
 
-@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
+@SpringBootTest(properties = { "spring.jpa.properties.hibernate.cache.use_second_level_cache=true",
+                               "spring.jpa.properties.hibernate.cache.use_query_cache=true" })
+@AutoConfigureTestDatabase(replace = NONE)
 @ExtendWith(SpringExtension.class)
-class OperatorServiceTest {
+class OperatorServiceWithCacheTest {
 
     @Autowired
     ProductService productService;

@@ -1,14 +1,19 @@
 package com.example.demo.local;
 
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE;
+import static org.hibernate.annotations.OptimisticLockType.VERSION;
+import static org.hibernate.annotations.SourceType.VM;
 import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.InheritanceType.JOINED;
 import static lombok.AccessLevel.PROTECTED;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.OptimisticLockType;
 import org.hibernate.annotations.OptimisticLocking;
+import com.example.demo.local.Operator.OperatorPK;
 import com.example.demo.local.Product.ProductPK;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
@@ -17,9 +22,11 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.Inheritance;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,18 +42,19 @@ import lombok.experimental.NonFinal;
 @ToString(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-@OptimisticLocking(type = OptimisticLockType.DIRTY)
+@OptimisticLocking(type = VERSION)
 @DynamicUpdate
 @Cacheable
 @Cache(usage = READ_WRITE)
+@Inheritance(strategy = JOINED)
 @Table(name = "PRODUCTS")
-public class Product {
-    public Product(String productId, Operator operator) {
+public abstract class Product {
+    protected Product(String productId, Operator operator) {
         this.productId = productId;
         this.operator = operator;
     }
 
-    public Product(String productId, Operator operator, Benefits benefits) {
+    protected Product(String productId, Operator operator, Benefits benefits) {
         this.productId = productId;
         this.operator = operator;
         this.benefits = benefits;
@@ -63,10 +71,9 @@ public class Product {
     @ToString.Include
     @Getter
     @Setter
-    @Cache(usage = READ_WRITE)
     @ManyToOne(fetch = EAGER, optional = false)
-    @JoinColumn(name = "OPERATOR_ID", nullable = false)
-    @JoinColumn(name = "COUNTRY", nullable = false)
+    @JoinColumn(name = "OPERATOR_ID", referencedColumnName = "OPERATOR_ID", nullable = false)
+    @JoinColumn(name = "COUNTRY", referencedColumnName = "COUNTRY", nullable = false)
     private Operator operator;
 
     @Column(name = "DESCRIPTION")
@@ -76,6 +83,11 @@ public class Product {
     @Embedded
     private Benefits benefits;
 
+    @Version
+    @CurrentTimestamp(source = VM)
+    @Column(name = "MODIFICATION_DATE", nullable = false, insertable = true)
+    private Instant modificationDate;
+
     @EqualsAndHashCode
     @ToString
     @Embeddable
@@ -83,17 +95,16 @@ public class Product {
     public static class ProductPK implements Serializable {
 
         private String productId;
-        @Embedded
-        private Operator.OperatorPK operator;
+        private OperatorPK operator;
 
-        public ProductPK(String productId, Operator.OperatorPK operator) {
+        public ProductPK(String productId, OperatorPK operator) {
             this.productId = productId;
             this.operator = operator;
         }
 
         public ProductPK(String productId, String operatorID, Country country) {
             this.productId = productId;
-            this.operator = new Operator.OperatorPK(operatorID, country);
+            this.operator = new OperatorPK(operatorID, country);
         }
     }
 
